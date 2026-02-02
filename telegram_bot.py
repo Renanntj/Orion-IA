@@ -39,8 +39,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message is None or update.message.text is None:
+        return
+
     chat_id = update.effective_chat.id
     texto = update.message.text.strip()
+
+    if not texto:
+        return
 
     if chat_id not in usuarios_autenticados:
 
@@ -50,16 +56,16 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 usuarios_aguardando_senha.remove(chat_id)
 
                 await update.message.reply_text(
-                    "✅ Acesso liberado. Pode enviar sua mensagem."
+                    "Acesso liberado. Pode enviar sua mensagem."
                 )
             else:
                 await update.message.reply_text(
-                    "❌ Senha incorreta. Tente novamente."
+                    "Senha incorreta. Tente novamente."
                 )
             return
 
         await update.message.reply_text(
-            "⚠️ Envie /start para iniciar o acesso ao Orion IA."
+            "Envie /start para iniciar o acesso ao Orion IA."
         )
         return
 
@@ -68,15 +74,15 @@ async def responder(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if ultimo and (agora - ultimo) < TEMPO_MINIMO_ENTRE_MSG:
         await update.message.reply_text(
-            "⏳ Aguarde alguns segundos antes de enviar outra mensagem."
+            "Aguarde alguns segundos antes de enviar outra mensagem."
         )
         return
 
     ultimo_acesso[chat_id] = agora
 
-
     resposta = processar_mensagem(texto)
     await update.message.reply_text(resposta)
+
 
 def main():
     application = Application.builder().token(TOKEN).build()
@@ -86,7 +92,7 @@ def main():
         MessageHandler(filters.TEXT & ~filters.COMMAND, responder)
     )
 
-    print("🤖 Bot Telegram rodando...")
+    print("Telegram rodando...")
     application.run_polling()
 
 

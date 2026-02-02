@@ -11,7 +11,6 @@ def ler_pdf(nome_arquivo):
     caminho_pdf = os.path.join(BASE_DIR, "..", nome_arquivo)
 
     if not os.path.exists(caminho_pdf):
-        print(f"[AVISO] Base não encontrada: {caminho_pdf}")
         return None
 
     try:
